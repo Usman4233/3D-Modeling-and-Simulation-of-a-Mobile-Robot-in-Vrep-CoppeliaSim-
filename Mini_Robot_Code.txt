@@ -1,0 +1,61 @@
+                                -- Project 01
+                                -- Submitted to: Dr. Yasar Ayaz
+                                -- Submitted by: Usman Zaheer
+                                -- Mobile Robotics
+
+--Mini_Robot
+function LinearChange(uiHandle, id, newValue)
+    speed=newValue*max_speed/100
+    move(speed,turn)
+end
+function AngularChange(uiHandle, id, newValue)
+    turn=newValue*max_turn/100
+    move(speed,turn)
+end
+--lv= linear velocity
+-- av= angular velocity
+-- s= distance of wheels from centre of robot body (wheel basis) 
+function move(lv,av)
+    sim.setJointTargetVelocity(left_wheel,(lv-s*av)/wheel_radius)
+    sim.setJointTargetVelocity(right_wheel,(lv+s*av)/wheel_radius)
+end
+function moveForward()
+    sim.setJointTargetVelocity(left_wheel,0.5*max_speed/wheel_radius)
+    sim.setJointTargetVelocity(right_wheel,0.5*max_speed/wheel_radius)
+end
+function moveBackwards()
+    sim.setJointTargetVelocity(left_wheel,-0.5*max_speed/wheel_radius)
+    sim.setJointTargetVelocity(right_wheel,-0.5*max_speed/wheel_radius)
+end
+function turnLeft()
+    sim.setJointTargetVelocity(left_wheel,-0.5*max_speed/wheel_radius)
+    sim.setJointTargetVelocity(right_wheel,0.5*max_speed/wheel_radius)
+end
+function turnRight()
+    sim.setJointTargetVelocity(left_wheel,0.5*max_speed/wheel_radius)
+    sim.setJointTargetVelocity(right_wheel,-0.5*max_speed/wheel_radius)
+end
+function stop()
+    sim.setJointTargetVelocity(left_wheel,0)
+    sim.setJointTargetVelocity(right_wheel,0)
+end
+function sysCall_init()
+    -- do some initialization here
+    left_wheel=sim.getObjectHandle('Revolute_joint_left_wheel')
+    right_wheel=sim.getObjectHandle('Revolute_joint_right_wheel')
+    wheel_radius=0.03 
+    max_speed=0.2 -- can be increased/decreased as per requirement.
+    max_turn=0.1 -- can be increased/decreased as per requirement.
+    speed=0 -- initial speed
+    turn=1
+    s=0.0565 -- distance of wheels from centre of robot body (wheel basis) 
+    ui=simUI.create('<ui enabled="true" modal="false" title="Mini_Robot" closeable="true" layout="vbox" placement="relative" position="20,20">' ..
+    '<label enabled="true" text="Slider Control"></label>' ..
+    '<hslider enabled="true" minimum="-100" maximum="100" on-change="LinearChange"></hslider>' ..
+    '<button enabled="true" text="Right Turn" on-click="moveForward"></button>' ..
+    '<button enabled="true" text="Left Turn" on-click="moveBackwards"></button>' ..
+    '<button enabled="true" text="Forward" on-click="turnLeft"></button>' ..
+    '<button enabled="true" text="Reverse" on-click="turnRight"></button>' ..
+    '<button enabled="true" text="Stop" on-click="stop"></button>' ..
+    '</ui>')
+end
